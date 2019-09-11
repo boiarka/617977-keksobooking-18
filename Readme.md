@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Yurii Androsiuk](https://up.htmlacademy.ru/javascript/18/user/617977).
-* Наставник: `Неизвестно`.
+* Наставник: `Евгений Алипкин`.
 
 ---
 
