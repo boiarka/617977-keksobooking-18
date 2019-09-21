@@ -1,6 +1,5 @@
 'use strict';
 var COUNT_OFFERS = 8;
-var AVATARS = [1, 2, 3, 4, 5, 6, 7, 8];
 var PRICES = [100, 200, 300, 400, 500, 600, 700, 800];
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var CHECKINS = ['12:00', '13:00', '14:00'];
@@ -17,15 +16,15 @@ function randomInteger(min, max) {
   return Math.floor(rand);
 }
 
-function generateData(avatars, prices, types, checkins, checkouts, features, photos) {
+function generateData(prices, types, checkins, checkouts, features, photos) {
   var data = [];
-  for (var i = 0; i < COUNT_OFFERS; i++) {
+  for (var i = 1; i < COUNT_OFFERS; i++) {
     var obj = {
       'author': {
-        'avatar': 'img/avatars/user0' + avatars[i] + '.png'
+        'avatar': 'img/avatars/user0' + i + '.png'
       },
       'offer': {
-        'title': 'Квартира ' + avatars[i],
+        'title': 'Квартира ' + i,
         'address': '600, 350',
         'price': prices[i],
         'type': types[randomInteger(0, 3)],
@@ -34,7 +33,7 @@ function generateData(avatars, prices, types, checkins, checkouts, features, pho
         'checkin': checkins[randomInteger(0, 2)],
         'checkout': checkouts[randomInteger(0, 2)],
         'features': features[randomInteger(0, 5)],
-        'description': 'Квартира описание ' + avatars[i],
+        'description': 'Квартира описание ' + i,
         'photos': photos[randomInteger(1, 5)]
       },
       'location': {
@@ -58,7 +57,7 @@ function renderPins(pins) {
 
 mapElement.classList.remove('map--faded');
 
-var dataArray = generateData(AVATARS, PRICES, TYPES, CHECKINS, CHECKOUTS, FEATURES, PHOTOS);
+var dataArray = generateData(PRICES, TYPES, CHECKINS, CHECKOUTS, FEATURES, PHOTOS);
 var fragment = document.createDocumentFragment();
 
 for (var i = 0; i < dataArray.length; i++) {
