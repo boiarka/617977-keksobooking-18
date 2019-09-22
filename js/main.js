@@ -28,10 +28,10 @@ function randomArrayLength(array, max) {
 
 function generateData(prices, types, checkins, checkouts, features, photos) {
   var data = [];
-  for (var i = 1; i < COUNT_OFFERS; i++) {
+  for (var i = 0; i < COUNT_OFFERS; i++) {
     var obj = {
       'author': {
-        'avatar': 'img/avatars/user0' + i + '.png'
+        'avatar': 'img/avatars/user0' + (i + 1) + '.png'
       },
       'offer': {
         'title': 'Квартира ' + i,
@@ -84,7 +84,6 @@ function renderCards(card) {
 
 
   cardElement.querySelector('.popup__type').textContent = typeOffer;
-
   cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ' , выезд до ' + card.offer.checkout;
   cardElement.querySelector('.popup__features').textContent = card.offer.features;
