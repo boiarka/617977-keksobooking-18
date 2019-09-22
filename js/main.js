@@ -16,12 +16,20 @@ function randomInteger(min, max) {
   return Math.floor(rand);
 }
 
+function randomArrayLength(array, max) {
+  var newArray = [];
+  for (var i = 0; i < randomInteger(1, max); i++) {
+    newArray.push(array[i]);
+  }
+  return newArray;
+}
+
 function generateData(prices, types, checkins, checkouts, features, photos) {
   var data = [];
-  for (var i = 1; i < COUNT_OFFERS; i++) {
+  for (var i = 0; i < COUNT_OFFERS; i++) {
     var obj = {
       'author': {
-        'avatar': 'img/avatars/user0' + i + '.png'
+        'avatar': 'img/avatars/user0' + (i + 1) + '.png'
       },
       'offer': {
         'title': 'Квартира ' + i,
@@ -32,9 +40,9 @@ function generateData(prices, types, checkins, checkouts, features, photos) {
         'guests': randomInteger(1, 5),
         'checkin': checkins[randomInteger(0, 2)],
         'checkout': checkouts[randomInteger(0, 2)],
-        'features': features[randomInteger(0, 5)],
+        'features': randomArrayLength(features, 5),
         'description': 'Квартира описание ' + i,
-        'photos': photos[randomInteger(1, 5)]
+        'photos': randomArrayLength(photos, 3)
       },
       'location': {
         'x': randomInteger(40, 1160),
