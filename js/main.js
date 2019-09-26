@@ -1,4 +1,7 @@
 'use strict';
+
+var ENTER_KEYCODE = 13; 
+
 var COUNT_OFFERS = 8;
 var PRICES = [100, 200, 300, 400, 500, 600, 700, 800];
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
@@ -6,12 +9,21 @@ var CHECKINS = ['12:00', '13:00', '14:00'];
 var CHECKOUTS = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var MAP_PIN_X = 600;
+var MAP_PIN_Y = 428;
 
 var mapElement = document.querySelector('.map');
 var mapPinsElement = document.querySelector('.map__pins');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+
+var mapPinMainElement = document.querySelector('.map__pin--main');
+var adFormElement = document.querySelector('.ad-form');
+var allAdFormElements = document.querySelectorAll('.ad-form__element');
+var addressElement = document.querySelector('#address');
+var roomСapacityElement = document.querySelector('#capacity');
+var roomNumberElement = document.querySelector('#room_number');
 
 function randomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -95,15 +107,66 @@ function renderCards(card) {
   return cardElement;
 }
 
-mapElement.classList.remove('map--faded');
+function startMap() {
+  mapElement.classList.remove('map--faded');
 
-var dataArray = generateData(PRICES, TYPES, CHECKINS, CHECKOUTS, FEATURES, PHOTOS);
-var fragment = document.createDocumentFragment();
+  var dataArray = generateData(PRICES, TYPES, CHECKINS, CHECKOUTS, FEATURES, PHOTOS);
+  var fragment = document.createDocumentFragment();
+  
+  for (var i = 0; i < dataArray.length; i++) {
+    fragment.appendChild(renderPins(dataArray[i]));
+  }
+  mapPinsElement.appendChild(fragment);
+  
+  fragment.appendChild(renderCards(dataArray[0]));
+  mapFiltersContainer.before(fragment);
 
-for (var i = 0; i < dataArray.length; i++) {
-  fragment.appendChild(renderPins(dataArray[i]));
+  adFormElement.classList.remove('ad-form--disabled');
+  
+  for(var i = 0; i < allAdFormElements.length; i++) {
+    allAdFormElements[i].disabled = false;
+  }
+  addressElement.value = 'x: ' + MAP_PIN_X + ', y: ' + MAP_PIN_Y;
 }
-mapPinsElement.appendChild(fragment);
 
-fragment.appendChild(renderCards(dataArray[0]));
-mapFiltersContainer.before(fragment);
+
+
+mapPinMainElement.addEventListener('mousedown', startMap);
+mapPinMainElement.addEventListener('keydown', function(evt) {
+  if(evt.keyCode === ENTER_KEYCODE) {
+    startMap();
+  }
+})
+
+roomСapacityElement.addEventListener('change', function() {
+  var allCapacityOptions = roomСapacityElement.querySelectorAll('option');
+  var allRoomOptions = roomNumberElement.querySelectorAll('option');
+  for(var i = 0; i < allRoomOptions.length; i++){
+    allRoomOptions[i].disabled = false;
+  }
+
+  for(var i = 0; i < allCapacityOptions.length; i++){
+    if(allCapacityOptions[i].selected == true) {
+      var pickedCapacity = allCapacityOptions[i].value;
+    }
+  }
+
+
+  for(var i = 0; i < allRoomOptions.length; i++){
+    if(allRoomOptions[i].value === pickedCapacity) {
+      allRoomOptions[i].selected = true;
+    }
+    if(allRoomOptions[i].value < +pickedCapacity) {
+      allRoomOptions[i].disabled = true;
+    }
+  }
+
+  console.log('capacity: ' + pickedCapacity);
+
+})
+
+
+// roomNumberElement
+
+// Соответствие кол-ва гостей и комнат
+
