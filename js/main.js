@@ -1,4 +1,7 @@
 'use strict';
+
+var ENTER_KEYCODE = 13;
+
 var COUNT_OFFERS = 8;
 var PRICES = [100, 200, 300, 400, 500, 600, 700, 800];
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
@@ -6,12 +9,33 @@ var CHECKINS = ['12:00', '13:00', '14:00'];
 var CHECKOUTS = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var MAP_PIN_X = 600;
+var MAP_PIN_Y = 428;
+
+var typeOffer = {
+  'flat': 'Квартира',
+  'bungalo': 'Бунгало',
+  'house': 'Дом',
+  'palace': 'Дворец'
+};
 
 var mapElement = document.querySelector('.map');
 var mapPinsElement = document.querySelector('.map__pins');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+
+var mapPinMainElement = document.querySelector('.map__pin--main');
+var adFormElement = document.querySelector('.ad-form');
+var allAdFormElements = document.querySelectorAll('.ad-form__element');
+var addressElement = document.querySelector('#address');
+var roomСapacityElement = document.querySelector('#capacity');
+var roomNumberElement = document.querySelector('#room_number');
+var allCapacityOptions = roomСapacityElement.querySelectorAll('option');
+var allRoomOptions = roomNumberElement.querySelectorAll('option');
+
+var dataArray = generateData(PRICES, TYPES, CHECKINS, CHECKOUTS, FEATURES, PHOTOS);
+var fragment = document.createDocumentFragment();
 
 function randomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -65,45 +89,95 @@ function renderPins(pins) {
   return pinElement;
 }
 
+function renderPhotos(photos, element) {
+  for (var i = 0; i < photos.length; i++) {
+    var clonedPhoto = element.querySelector('.popup__photo').cloneNode(true);
+    clonedPhoto.src = photos[i];
+    element.querySelector('.popup__photos').appendChild(clonedPhoto);
+  }
+  element.querySelector('.popup__photos').removeChild(element.querySelector('.popup__photo'));
+}
+
 function renderCards(card) {
   var cardElement = cardTemplate.cloneNode(true);
   cardElement.querySelector('.popup__title').textContent = card.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
-
-  var typeOffer = {
-    'flat': 'Квартира',
-    'bungalo': 'Бунгало',
-    'house': 'Дом',
-    'palace': 'Дворец'
-  };
-
   cardElement.querySelector('.popup__type').textContent = typeOffer[card.offer.type];
   cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ' , выезд до ' + card.offer.checkout;
   cardElement.querySelector('.popup__features').textContent = card.offer.features;
   cardElement.querySelector('.popup__description').textContent = card.offer.description;
-
-  for (var j = 0; j < card.offer.photos.length; j++) {
-    var clonedPhoto = cardElement.querySelector('.popup__photo').cloneNode(true);
-    clonedPhoto.src = card.offer.photos[j];
-    cardElement.querySelector('.popup__photos').appendChild(clonedPhoto);
-  }
-  cardElement.querySelector('.popup__photos').removeChild(cardElement.querySelector('.popup__photo'));
-
   cardElement.querySelector('.popup__avatar').src = card.author.avatar;
+  renderPhotos(card.offer.photos, cardElement);
   return cardElement;
 }
 
-mapElement.classList.remove('map--faded');
+function startMap() {
+  mapElement.classList.remove('map--faded');
 
-var dataArray = generateData(PRICES, TYPES, CHECKINS, CHECKOUTS, FEATURES, PHOTOS);
-var fragment = document.createDocumentFragment();
+  for (var i = 0; i < dataArray.length; i++) {
+    fragment.appendChild(renderPins(dataArray[i]));
+  }
+  mapPinsElement.appendChild(fragment);
 
-for (var i = 0; i < dataArray.length; i++) {
-  fragment.appendChild(renderPins(dataArray[i]));
+  fragment.appendChild(renderCards(dataArray[0]));
+  mapFiltersContainer.before(fragment);
+
+  adFormElement.classList.remove('ad-form--disabled');
+
+  for (i = 0; i < allAdFormElements.length; i++) {
+    allAdFormElements[i].disabled = false;
+  }
+  addressElement.value = MAP_PIN_X + ', ' + MAP_PIN_Y;
 }
-mapPinsElement.appendChild(fragment);
 
-fragment.appendChild(renderCards(dataArray[0]));
-mapFiltersContainer.before(fragment);
+function roomNumberToCapacity() {
+  for (var i = 0; i < allRoomOptions.length; i++) {
+    allRoomOptions[i].disabled = false;
+  }
+
+  for (i = 0; i < allRoomOptions.length; i++) {
+    if (allRoomOptions[i].selected === true) {
+      var pickedRoomNumbers = +allRoomOptions[i].value;
+    }
+  }
+
+  for (i = 0; i < allCapacityOptions.length; i++) {
+    var currentCapacity = +allCapacityOptions[i].value;
+    if (pickedRoomNumbers === 100) {
+      allCapacityOptions[i].disabled = true;
+      if (currentCapacity === 0) {
+        allCapacityOptions[i].disabled = false;
+        allCapacityOptions[i].selected = true;
+      }
+    } else {
+      if (currentCapacity === 0) {
+        allCapacityOptions[i].disabled = true;
+      } else {
+        if (currentCapacity > pickedRoomNumbers) {
+          allCapacityOptions[i].disabled = true;
+        }
+        if (currentCapacity <= pickedRoomNumbers) {
+          allCapacityOptions[i].disabled = false;
+        }
+        if (currentCapacity === pickedRoomNumbers) {
+          allCapacityOptions[i].selected = true;
+        }
+      }
+    }
+  }
+}
+
+mapPinMainElement.addEventListener('mousedown', startMap);
+mapPinMainElement.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    startMap();
+  }
+});
+
+
+roomNumberToCapacity();
+roomNumberElement.addEventListener('change', function () {
+  roomNumberToCapacity();
+});
