@@ -1,6 +1,7 @@
 'use strict';
 
 var ENTER_KEYCODE = 13;
+var ESC_KEYCODE = 27;
 
 var COUNT_OFFERS = 8;
 var PRICES = [100, 200, 300, 400, 500, 600, 700, 800];
@@ -58,6 +59,7 @@ function generateData(prices, types, checkins, checkouts, features, photos) {
         'avatar': 'img/avatars/user0' + (i + 1) + '.png'
       },
       'offer': {
+        'id': i,
         'title': 'Квартира ' + i,
         'address': '600, 350',
         'price': prices[i],
@@ -86,6 +88,7 @@ function renderPins(pins) {
   pinElement.style.top = pins.location.y + 'px';
   pinElement.querySelector('img').src = pins.author.avatar;
   pinElement.querySelector('img').alt = pins.offer.title;
+  pinPopup(pinElement, pins.offer.id);
   return pinElement;
 }
 
@@ -113,15 +116,51 @@ function renderCards(card) {
   return cardElement;
 }
 
+function pinPopup(pin, id) {
+  pin.addEventListener('click', function () {
+    openPopup();
+    closePopup();
+  });
+
+  pin.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      openPopup();
+      closePopup();
+    }
+  });
+
+
+  function openPopup() {
+    var oldPopup = document.querySelector('.popup');
+    if (oldPopup) {
+      oldPopup.remove();
+    }
+    var popup = fragment.appendChild(renderCards(dataArray[id]));
+    mapPinsElement.appendChild(popup);
+  }
+}
+
+
+function closePopup() {
+  var popupClose = document.querySelector('.popup__close');
+  var newPopup = document.querySelector('.popup');
+  popupClose.addEventListener('click', function () {
+    newPopup.classList.add('hidden');
+  });
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      newPopup.classList.add('hidden');
+    }
+  });
+}
+
 function startMap() {
   mapElement.classList.remove('map--faded');
 
   for (var i = 0; i < dataArray.length; i++) {
+    var pinID = dataArray[i];
     fragment.appendChild(renderPins(dataArray[i]));
   }
-  mapPinsElement.appendChild(fragment);
-
-  fragment.appendChild(renderCards(dataArray[0]));
   mapFiltersContainer.before(fragment);
 
   adFormElement.classList.remove('ad-form--disabled');
