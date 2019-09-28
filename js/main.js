@@ -158,7 +158,6 @@ function startMap() {
   mapElement.classList.remove('map--faded');
 
   for (var i = 0; i < dataArray.length; i++) {
-    var pinID = dataArray[i];
     fragment.appendChild(renderPins(dataArray[i]));
   }
   mapFiltersContainer.before(fragment);
