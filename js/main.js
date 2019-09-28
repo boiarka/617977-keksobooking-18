@@ -34,6 +34,12 @@ var roomСapacityElement = document.querySelector('#capacity');
 var roomNumberElement = document.querySelector('#room_number');
 var allCapacityOptions = roomСapacityElement.querySelectorAll('option');
 var allRoomOptions = roomNumberElement.querySelectorAll('option');
+var typeOfferElement = document.querySelector('#type');
+var priceOfferElement = document.querySelector('#price');
+var timeinElement = document.querySelector('#timein');
+var timeoutElement = document.querySelector('#timeout');
+var timeinOptions = timeinElement.querySelectorAll('option');
+var timeoutOptions = timeoutElement.querySelectorAll('option');
 
 var dataArray = generateData(PRICES, TYPES, CHECKINS, CHECKOUTS, FEATURES, PHOTOS);
 var fragment = document.createDocumentFragment();
@@ -206,6 +212,71 @@ function roomNumberToCapacity() {
     }
   }
 }
+
+
+function offerType() {
+  var typeOfferOptions = typeOfferElement.querySelectorAll('option');
+  for (var i = 0; i < typeOfferOptions.length; i++) {
+    if (typeOfferOptions[i].selected === true) {
+      if (typeOfferOptions[i].value === 'bungalo') {
+        priceOfferElement.min = '0';
+        priceOfferElement.placeholder = '0';
+      }
+      if (typeOfferOptions[i].value === 'flat') {
+        priceOfferElement.min = '1000';
+        priceOfferElement.placeholder = '1000';
+      }
+      if (typeOfferOptions[i].value === 'house') {
+        priceOfferElement.min = '5000';
+        priceOfferElement.placeholder = '5000';
+      }
+      if (typeOfferOptions[i].value === 'palace') {
+        priceOfferElement.min = '10000';
+        priceOfferElement.placeholder = '10000';
+      }
+    }
+  }
+}
+
+typeOfferElement.addEventListener('change', function () {
+  offerType();
+});
+
+
+function checkTimeIn() {
+  for (var i = 0; i < timeinOptions.length; i++) {
+    if (timeinOptions[i].selected === true) {
+      var timeinOptionSelected = timeinOptions[i].value;
+      for (i = 0; i < timeoutOptions.length; i++) {
+        if (timeoutOptions[i].value === timeinOptionSelected) {
+          timeoutOptions[i].selected = true;
+        }
+      }
+    }
+  }
+}
+
+function checkTimeOut() {
+  for (var i = 0; i < timeoutOptions.length; i++) {
+    if (timeoutOptions[i].selected === true) {
+      var timeoutOptionSelected = timeoutOptions[i].value;
+      for (i = 0; i < timeinOptions.length; i++) {
+        if (timeinOptions[i].value === timeoutOptionSelected) {
+          timeinOptions[i].selected = true;
+        }
+      }
+    }
+  }
+}
+
+timeinElement.addEventListener('change', function () {
+  checkTimeIn();
+});
+
+timeoutElement.addEventListener('change', function () {
+  checkTimeOut();
+});
+
 
 mapPinMainElement.addEventListener('mousedown', startMap);
 mapPinMainElement.addEventListener('keydown', function (evt) {
