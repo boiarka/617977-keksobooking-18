@@ -88,13 +88,13 @@ function generateData(prices, types, checkins, checkouts, features, photos) {
   return data;
 }
 
-function renderPins(pins) {
+function renderPins(pin) {
   var pinElement = pinTemplate.cloneNode(true);
-  pinElement.style.left = pins.location.x + 'px';
-  pinElement.style.top = pins.location.y + 'px';
-  pinElement.querySelector('img').src = pins.author.avatar;
-  pinElement.querySelector('img').alt = pins.offer.title;
-  pinPopup(pinElement, pins.offer.id);
+  pinElement.style.left = pin.location.x + 'px';
+  pinElement.style.top = pin.location.y + 'px';
+  pinElement.querySelector('img').src = pin.author.avatar;
+  pinElement.querySelector('img').alt = pin.offer.title;
+  pinPopup(pinElement, pin.offer.id);
   return pinElement;
 }
 
@@ -162,14 +162,12 @@ function closePopup() {
 
 function startMap() {
   mapElement.classList.remove('map--faded');
-
   for (var i = 0; i < dataArray.length; i++) {
     fragment.appendChild(renderPins(dataArray[i]));
   }
   mapFiltersContainer.before(fragment);
 
   adFormElement.classList.remove('ad-form--disabled');
-
   for (i = 0; i < allAdFormElements.length; i++) {
     allAdFormElements[i].disabled = false;
   }
