@@ -36,22 +36,22 @@ var allCapacityOptions = roomСapacityElement.querySelectorAll('option');
 var allRoomOptions = roomNumberElement.querySelectorAll('option');
 var typeOfferElement = document.querySelector('#type');
 var priceOfferElement = document.querySelector('#price');
-var timeinElement = document.querySelector('#timein');
-var timeoutElement = document.querySelector('#timeout');
-var timeinOptions = timeinElement.querySelectorAll('option');
-var timeoutOptions = timeoutElement.querySelectorAll('option');
+var timeInElement = document.querySelector('#timein');
+var timeOutElement = document.querySelector('#timeout');
+var timeinOptions = timeInElement.querySelectorAll('option');
+var timeoutOptions = timeOutElement.querySelectorAll('option');
 
 var dataArray = generateData(PRICES, TYPES, CHECKINS, CHECKOUTS, FEATURES, PHOTOS);
 var fragment = document.createDocumentFragment();
 
-function randomInteger(min, max) {
+function getRandomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
   return Math.floor(rand);
 }
 
-function randomArrayLength(array, max) {
+function getRandomLengthArray(array, max) {
   var newArray = [];
-  for (var i = 0; i < randomInteger(1, max); i++) {
+  for (var i = 0; i < getRandomInteger(1, max); i++) {
     newArray.push(array[i]);
   }
   return newArray;
@@ -69,18 +69,18 @@ function generateData(prices, types, checkins, checkouts, features, photos) {
         'title': 'Квартира ' + i,
         'address': '600, 350',
         'price': prices[i],
-        'type': types[randomInteger(0, 3)],
-        'rooms': randomInteger(1, 5),
-        'guests': randomInteger(1, 5),
-        'checkin': checkins[randomInteger(0, 2)],
-        'checkout': checkouts[randomInteger(0, 2)],
-        'features': randomArrayLength(features, 5),
+        'type': types[getRandomInteger(0, 3)],
+        'rooms': getRandomInteger(1, 5),
+        'guests': getRandomInteger(1, 5),
+        'checkin': checkins[getRandomInteger(0, 2)],
+        'checkout': checkouts[getRandomInteger(0, 2)],
+        'features': getRandomLengthArray(features, 5),
         'description': 'Квартира описание ' + i,
-        'photos': randomArrayLength(photos, 3)
+        'photos': getRandomLengthArray(photos, 3)
       },
       'location': {
-        'x': randomInteger(40, 1160),
-        'y': randomInteger(130, 630)
+        'x': getRandomInteger(40, 1160),
+        'y': getRandomInteger(130, 630)
       }
     };
     data.push(obj);
@@ -88,13 +88,13 @@ function generateData(prices, types, checkins, checkouts, features, photos) {
   return data;
 }
 
-function renderPins(pin) {
+function renderPin(pin) {
   var pinElement = pinTemplate.cloneNode(true);
   pinElement.style.left = pin.location.x + 'px';
   pinElement.style.top = pin.location.y + 'px';
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
-  pinPopup(pinElement, pin.offer.id);
+  addPinHandlers(pinElement, pin.offer.id);
   return pinElement;
 }
 
@@ -122,32 +122,31 @@ function renderCards(card) {
   return cardElement;
 }
 
-function pinPopup(pin, id) {
+function addPinHandlers(pin, id) {
+
   pin.addEventListener('click', function () {
     openPopup();
-    closePopup();
+    addPopupHandlers();
   });
 
   pin.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
       openPopup();
-      closePopup();
+      addPopupHandlers();
     }
   });
 
-
   function openPopup() {
+    var popup = fragment.appendChild(renderCards(dataArray[id]));
     var oldPopup = document.querySelector('.popup');
     if (oldPopup) {
       oldPopup.remove();
     }
-    var popup = fragment.appendChild(renderCards(dataArray[id]));
     mapPinsElement.appendChild(popup);
   }
 }
 
-
-function closePopup() {
+function addPopupHandlers() {
   var popupClose = document.querySelector('.popup__close');
   var newPopup = document.querySelector('.popup');
   popupClose.addEventListener('click', function () {
@@ -163,7 +162,7 @@ function closePopup() {
 function startMap() {
   mapElement.classList.remove('map--faded');
   for (var i = 0; i < dataArray.length; i++) {
-    fragment.appendChild(renderPins(dataArray[i]));
+    fragment.appendChild(renderPin(dataArray[i]));
   }
   mapFiltersContainer.before(fragment);
 
@@ -267,11 +266,11 @@ function checkTimeOut() {
   }
 }
 
-timeinElement.addEventListener('change', function () {
+timeInElement.addEventListener('change', function () {
   checkTimeIn();
 });
 
-timeoutElement.addEventListener('change', function () {
+timeOutElement.addEventListener('change', function () {
   checkTimeOut();
 });
 
