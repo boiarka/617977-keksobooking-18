@@ -2,36 +2,6 @@
 
 (function () {
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  window.typeOffer = {
-    'flat': {
-      translation: 'Квартира',
-      validation: {
-        min: '1000',
-        placeholder: '1000'
-      }
-    },
-    'bungalo': {
-      translation: 'Бунгало',
-      validation: {
-        min: '0',
-        placeholder: '0'
-      }
-    },
-    'house': {
-      translation: 'Дом',
-      validation: {
-        min: '5000',
-        placeholder: '5000'
-      }
-    },
-    'palace': {
-      translation: 'Дворец',
-      validation: {
-        min: '10000',
-        placeholder: '10000'
-      }
-    }
-  };
 
   var renderPhotos = function (photos, element) {
     for (var i = 0; i < photos.length; i++) {

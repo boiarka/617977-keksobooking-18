@@ -59,6 +59,7 @@
     }
   }
 
+  updateOfferType();
   typeOfferElement.addEventListener('change', function () {
     updateOfferType();
   });
