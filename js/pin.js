@@ -1,9 +1,6 @@
 'use strict';
 
 (function () {
-  window.ENTER_KEYCODE = 13;
-  window.ESC_KEYCODE = 27;
-
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   window.fragment = document.createDocumentFragment();
