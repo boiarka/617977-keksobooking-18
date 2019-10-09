@@ -1,43 +1,23 @@
 'use strict';
 
 (function () {
-  var mapPinsElement = document.querySelector('.map__pins');
+  var MAP_PIN_X = 600;
+  var MAP_PIN_Y = 428;
 
-  window.addPinHandlers = function (pin, id) {
+  var adFormElement = document.querySelector('.ad-form');
+  var allAdFormElements = document.querySelectorAll('.ad-form__element');
+  var addressElement = document.querySelector('#address');
 
-    pin.addEventListener('click', function () {
-      window.openPopup(id);
-      window.addPopupHandlers();
-    });
+  window.startMap = function () {
+    window.mapElement.classList.remove('map--faded');
 
-    pin.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.ENTER_KEYCODE) {
-        window.openPopup(id);
-        window.addPopupHandlers();
-      }
-    });
-  };
+    window.renderPins(window.dataArray);
 
-  window.openPopup = function (id) {
-    var popup = window.fragment.appendChild(window.renderCards(window.dataArray[id]));
-    var oldPopup = document.querySelector('.popup');
-    if (oldPopup) {
-      oldPopup.remove();
+    adFormElement.classList.remove('ad-form--disabled');
+    for (var i = 0; i < allAdFormElements.length; i++) {
+      allAdFormElements[i].disabled = false;
     }
-    mapPinsElement.appendChild(popup);
-  };
-
-  window.addPopupHandlers = function () {
-    var popupClose = document.querySelector('.popup__close');
-    var newPopup = document.querySelector('.popup');
-    popupClose.addEventListener('click', function () {
-      newPopup.classList.add('hidden');
-    });
-    document.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.ESC_KEYCODE) {
-        newPopup.classList.add('hidden');
-      }
-    });
+    addressElement.value = MAP_PIN_X + ', ' + MAP_PIN_Y;
   };
 
 })();
