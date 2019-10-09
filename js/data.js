@@ -8,9 +8,6 @@
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
-  window.mapElement = document.querySelector('.map');
-  window.mapPinMainElement = document.querySelector('.map__pin--main');
-
   var generateData = function (prices, types, checkins, checkouts, features, photos) {
     var data = [];
     var mapPinWidth = window.mapElement.clientWidth;

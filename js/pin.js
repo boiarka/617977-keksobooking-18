@@ -4,7 +4,6 @@
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPinsElement = document.querySelector('.map__pins');
-  window.fragment = document.createDocumentFragment();
 
   var openOfferCard = function (id) {
     var popup = window.fragment.appendChild(window.renderCards(window.dataArray[id]));
@@ -55,8 +54,8 @@
       pinElement.style.top = pin.location.y + 'px';
       pinElement.querySelector('img').src = pin.author.avatar;
       pinElement.querySelector('img').alt = pin.offer.title;
-      pinElement.querySelector('img').dataset.id = pin.id;
-      pinElement.dataset.id = pin.id;
+      pinElement.querySelector('img').dataset.id = i;
+      pinElement.dataset.id = i;
       window.fragment.appendChild(pinElement);
     }
     mapFiltersContainer.before(window.fragment);
