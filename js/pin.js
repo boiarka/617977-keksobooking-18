@@ -15,20 +15,24 @@
   };
 
   window.mapElement.addEventListener('click', function (evt) {
-    if (evt.target.dataset.id) {
-      var id = evt.target.dataset.id;
-      openOfferCard(id);
-      addPopupHandlers();
+    if (evt.target.closest('.map__pin')) {
+      if (evt.target.dataset.id) {
+        var id = evt.target.dataset.id;
+        openOfferCard(id);
+        addPopupHandlers();
+      }
     }
   });
 
 
   window.mapElement.addEventListener('keydown', function (evt) {
     if (evt.keyCode === window.ENTER_KEYCODE) {
-      if (evt.target.dataset.id) {
-        var id = evt.target.dataset.id;
-        openOfferCard(id);
-        addPopupHandlers();
+      if (evt.target.closest('.map__pin')) {
+        if (evt.target.dataset.id) {
+          var id = evt.target.dataset.id;
+          openOfferCard(id);
+          addPopupHandlers();
+        }
       }
     }
   });

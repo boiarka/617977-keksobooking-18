@@ -15,7 +15,6 @@
   var successHandler = function (offers) {
     window.renderPins(offers);
     window.dataArray = offers;
-    return window.dataArray;
   };
 
   var errorHandler = function (errorMessage) {
