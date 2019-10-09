@@ -10,7 +10,7 @@
   var timeInElement = document.querySelector('#timein');
   var timeOutElement = document.querySelector('#timeout');
 
-  function updateRoomAvailability() {
+  var updateRoomAvailability = function () {
     for (var i = 0; i < allRoomOptions.length; i++) {
       allRoomOptions[i].disabled = false;
     }
@@ -45,10 +45,10 @@
         }
       }
     }
-  }
+  };
 
 
-  function updateOfferType() {
+  var updateOfferType = function () {
     var typeOfferOptions = typeOfferElement.querySelectorAll('option');
     for (var i = 0; i < typeOfferOptions.length; i++) {
       if (typeOfferOptions[i].selected === true) {
@@ -57,29 +57,20 @@
         priceOfferElement.placeholder = window.typeOffer[id].validation.placeholder;
       }
     }
-  }
+  };
 
   updateOfferType();
   typeOfferElement.addEventListener('change', function () {
     updateOfferType();
   });
 
-
-  function syncSelectsValues(selectFrom, selectTo) {
-    var selectedValue = selectFrom.value;
-    if (selectedValue) {
-      selectTo.value = selectedValue;
-    }
-  }
-
-
   timeInElement.addEventListener('change', function () {
-    syncSelectsValues(timeInElement, timeOutElement);
+    window.syncSelectsValues(timeInElement, timeOutElement);
 
   });
 
   timeOutElement.addEventListener('change', function () {
-    syncSelectsValues(timeOutElement, timeInElement);
+    window.syncSelectsValues(timeOutElement, timeInElement);
   });
 
   updateRoomAvailability();

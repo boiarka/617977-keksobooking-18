@@ -3,9 +3,8 @@
 (function () {
   window.ENTER_KEYCODE = 13;
   window.ESC_KEYCODE = 27;
-
-  window.mapElement = document.querySelector('.map');
-  window.mapPinMainElement = document.querySelector('.map__pin--main');
+  window.MAX_PIN_Y = 630;
+  window.MAX_PIN_X = 130;
 
   window.typeOffer = {
     'flat': {
@@ -38,6 +37,7 @@
     }
   };
 
+  window.fragment = document.createDocumentFragment();
 
   window.getRandomInteger = function (min, max) {
     var rand = min + Math.random() * (max + 1 - min);
@@ -52,46 +52,10 @@
     return newArray;
   };
 
-  window.mapPinMainElement.addEventListener('mousedown', function (evt) {
-    evt.preventDefault();
-
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
-
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
-
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
-
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-
-      var pinCurrentY = window.mapPinMainElement.offsetTop - shift.y;
-      var pinCurrentX = window.mapPinMainElement.offsetLeft - shift.x;
-      var maxWidthX = window.mapElement.clientWidth - window.mapPinMainElement.clientWidth;
-
-      if (pinCurrentY < 630 && pinCurrentY > 130 && pinCurrentX > 0 && pinCurrentX < maxWidthX) {
-        window.mapPinMainElement.style.top = (window.mapPinMainElement.offsetTop - shift.y) + 'px';
-        window.mapPinMainElement.style.left = (window.mapPinMainElement.offsetLeft - shift.x) + 'px';
-      }
-
-    };
-
-    var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  });
+  window.syncSelectsValues = function (selectFrom, selectTo) {
+    var selectedValue = selectFrom.value;
+    if (selectedValue) {
+      selectTo.value = selectedValue;
+    }
+  };
 })();
