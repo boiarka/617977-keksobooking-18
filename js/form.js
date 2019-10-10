@@ -9,6 +9,9 @@
   var priceOfferElement = document.querySelector('#price');
   var timeInElement = document.querySelector('#timein');
   var timeOutElement = document.querySelector('#timeout');
+  var formElement = document.querySelector('.ad-form');
+  var successTemplate = document.querySelector('#success').content.querySelector('.success');
+  var successElement = successTemplate.cloneNode(true);
 
   var updateRoomAvailability = function () {
     for (var i = 0; i < allRoomOptions.length; i++) {
@@ -77,4 +80,24 @@
   roomNumberElement.addEventListener('change', function () {
     updateRoomAvailability();
   });
+
+  formElement.addEventListener('submit', function (evt) {
+    window.upload(new FormData(formElement), function () {
+      window.fragment.appendChild(successElement);
+      document.body.insertAdjacentElement('afterbegin', successElement);
+    }, window.errorHandler);
+    evt.preventDefault();
+
+    successElement.addEventListener('click', function () {
+      successElement.remove();
+    });
+
+    document.addEventListener('keydown', function (evtClick) {
+      if (evtClick.keyCode === window.ESC_KEYCODE) {
+        successElement.remove();
+      }
+    });
+  });
+
+
 })();

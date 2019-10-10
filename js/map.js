@@ -17,23 +17,35 @@
     window.dataArray = offers;
   };
 
-  var errorHandler = function (errorMessage) {
+  window.errorHandler = function (errorMessage) {
     var errorElement = errorTemplate.cloneNode(true);
     window.fragment.appendChild(errorElement);
     document.body.insertAdjacentElement('afterbegin', errorElement);
     var errorTextElement = document.querySelector('.error__message');
     errorTextElement.innerHTML = errorMessage;
     var errorButtonElement = document.querySelector('.error__button');
+    var errorDiv = document.querySelector('.error');
+
     errorButtonElement.addEventListener('click', function () {
-      var errorDiv = document.querySelector('.error');
       errorDiv.remove();
     });
+
+    errorDiv.addEventListener('click', function () {
+      errorDiv.remove();
+    });
+
+    document.addEventListener('keydown', function (evtClick) {
+      if (evtClick.keyCode === window.ESC_KEYCODE) {
+        errorDiv.remove();
+      }
+    });
+
   };
 
   window.startMap = function () {
     window.mapElement.classList.remove('map--faded');
 
-    window.load(successHandler, errorHandler);
+    window.load(successHandler, window.errorHandler);
 
     adFormElement.classList.remove('ad-form--disabled');
     for (var i = 0; i < allAdFormElements.length; i++) {
