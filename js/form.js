@@ -81,10 +81,34 @@
     updateRoomAvailability();
   });
 
+  var makeInactive = function () {
+    var popup = document.querySelector('.popup');
+    var allPins = document.querySelectorAll('.map__pin');
+
+    // окно успешного добавления
+    window.fragment.appendChild(successElement);
+    document.body.insertAdjacentElement('afterbegin', successElement);
+    // очистить форму
+    formElement.reset();
+    // удалить метки и карточку активного объявления
+    for (var i = 0; i < allPins.length; i++) {
+      if (allPins[i].dataset.id) {
+        allPins[i].remove();
+      }
+    }
+
+    if (popup) {
+      popup.remove();
+    }
+    // неактивное состояние
+    window.inactiveMap();
+    window.clickOnMainPin();
+
+  };
+
   formElement.addEventListener('submit', function (evt) {
     window.upload(new FormData(formElement), function () {
-      window.fragment.appendChild(successElement);
-      document.body.insertAdjacentElement('afterbegin', successElement);
+      makeInactive();
     }, window.errorHandler);
     evt.preventDefault();
 
@@ -93,7 +117,7 @@
     });
 
     document.addEventListener('keydown', function (evtClick) {
-      if (evtClick.keyCode === window.ESC_KEYCODE) {
+      if (window.isEscPressed(evtClick)) {
         successElement.remove();
       }
     });

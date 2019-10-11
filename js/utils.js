@@ -1,10 +1,11 @@
 'use strict';
 
 (function () {
-  window.ENTER_KEYCODE = 13;
-  window.ESC_KEYCODE = 27;
   window.MAX_PIN_Y = 630;
   window.MAX_PIN_X = 130;
+
+  var ENTER_KEYCODE = 13;
+  var ESC_KEYCODE = 27;
 
   window.typeOffer = {
     'flat': {
@@ -58,4 +59,12 @@
       selectTo.value = selectedValue;
     }
   };
+
+  window.isEnterPressed = function (evt) {
+    return evt.keyCode === ENTER_KEYCODE;
+  };
+  window.isEscPressed = function (evt) {
+    return evt.keyCode === ESC_KEYCODE;
+  };
+
 })();

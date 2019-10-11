@@ -1,41 +1,11 @@
 'use strict';
 
 (function () {
+  var Z_INDEX = 999;
+
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPinsElement = document.querySelector('.map__pins');
-
-  var openOfferCard = function (id) {
-    var popup = window.fragment.appendChild(window.renderCards(window.dataArray[id]));
-    var oldPopup = document.querySelector('.popup');
-    if (oldPopup) {
-      oldPopup.remove();
-    }
-    mapPinsElement.appendChild(popup);
-  };
-
-  window.mapElement.addEventListener('click', function (evt) {
-    if (evt.target.closest('.map__pin')) {
-      if (evt.target.dataset.id) {
-        var id = evt.target.dataset.id;
-        openOfferCard(id);
-        addPopupHandlers();
-      }
-    }
-  });
-
-
-  window.mapElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.ENTER_KEYCODE) {
-      if (evt.target.closest('.map__pin')) {
-        if (evt.target.dataset.id) {
-          var id = evt.target.dataset.id;
-          openOfferCard(id);
-          addPopupHandlers();
-        }
-      }
-    }
-  });
 
   var addPopupHandlers = function () {
     var popupClose = document.querySelector('.popup__close');
@@ -44,11 +14,38 @@
       newPopup.classList.add('hidden');
     });
     document.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.ESC_KEYCODE) {
+      if (window.isEscPressed(evt)) {
         newPopup.classList.add('hidden');
       }
     });
   };
+
+  var openOfferCard = function (id) {
+    var popup = window.fragment.appendChild(window.renderCards(window.dataArray[id]));
+    var oldPopup = document.querySelector('.popup');
+    if (oldPopup) {
+      oldPopup.remove();
+    }
+    mapPinsElement.appendChild(popup);
+    addPopupHandlers();
+  };
+
+  window.mapElement.addEventListener('click', function (evt) {
+    var id = evt.target.dataset.id;
+    var isPin = evt.target.closest('.map__pin');
+    if (isPin && id) {
+      openOfferCard(id);
+    }
+  });
+
+  window.mapElement.addEventListener('keydown', function (evt) {
+    var id = evt.target.dataset.id;
+    var isPin = evt.target.closest('.map__pin');
+    var isEnter = window.isEnterPressed(evt);
+    if (isEnter && isPin && id) {
+      openOfferCard(id);
+    }
+  });
 
   window.renderPins = function (pinsArray) {
     for (var i = 0; i < pinsArray.length; i++) {
@@ -66,26 +63,32 @@
   };
 
   // Клики по главному пину, добавление и удаление обработчиков
-  window.mapPinMainElement.addEventListener('mousedown', window.startMap);
-  window.mapPinMainElement.addEventListener('mouseup', function () {
-    window.mapPinMainElement.removeEventListener('mousedown', window.startMap);
-    window.mapPinMainElement.removeEventListener('keydown', pinKeyDown);
-  });
 
-  var pinKeyDown = function (evt) {
-    if (evt.keyCode === window.ENTER_KEYCODE) {
-      window.startMap();
-    }
+  window.clickOnMainPin = function () {
+    window.mapPinMainElement.addEventListener('mousedown', window.startMap);
+    window.mapPinMainElement.addEventListener('mouseup', function () {
+      window.mapPinMainElement.removeEventListener('mousedown', window.startMap);
+      window.mapPinMainElement.removeEventListener('keydown', pinKeyDown);
+    });
+
+    var pinKeyDown = function (evt) {
+      if (window.isEnterPressed(evt)) {
+        window.startMap();
+      }
+    };
+
+    window.mapPinMainElement.addEventListener('keydown', pinKeyDown);
+
+    window.mapPinMainElement.addEventListener('keyup', function (evt) {
+      if (window.isEnterPressed(evt)) {
+        window.mapPinMainElement.removeEventListener('keydown', pinKeyDown);
+        window.mapPinMainElement.removeEventListener('mousedown', window.startMap);
+      }
+    });
   };
 
-  window.mapPinMainElement.addEventListener('keydown', pinKeyDown);
+  window.clickOnMainPin();
 
-  window.mapPinMainElement.addEventListener('keyup', function (evt) {
-    if (evt.keyCode === window.ENTER_KEYCODE) {
-      window.mapPinMainElement.removeEventListener('keydown', pinKeyDown);
-      window.mapPinMainElement.removeEventListener('mousedown', window.startMap);
-    }
-  });
 
   window.mapPinMainElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -97,7 +100,7 @@
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      window.mapPinMainElement.style.zIndex = 999;
+      window.mapPinMainElement.style.zIndex = Z_INDEX;
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
@@ -113,10 +116,11 @@
       var maxWidthX = window.mapElement.clientWidth - window.mapPinMainElement.clientWidth;
 
       if (pinCurrentY < window.MAX_PIN_Y && pinCurrentY > window.MAX_PIN_X && pinCurrentX > 0 && pinCurrentX < maxWidthX) {
-        window.mapPinMainElement.style.top = (window.mapPinMainElement.offsetTop - shift.y) + 'px';
-        window.mapPinMainElement.style.left = (window.mapPinMainElement.offsetLeft - shift.x) + 'px';
+        window.mapPinMainElement.style.top = pinCurrentY + 'px';
+        window.mapPinMainElement.style.left = pinCurrentX + 'px';
       }
 
+      window.addressElement.value = pinCurrentX + ', ' + pinCurrentY;
     };
 
     var onMouseUp = function (upEvt) {
