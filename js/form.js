@@ -9,6 +9,9 @@
   var priceOfferElement = document.querySelector('#price');
   var timeInElement = document.querySelector('#timein');
   var timeOutElement = document.querySelector('#timeout');
+  var formElement = document.querySelector('.ad-form');
+  var successTemplate = document.querySelector('#success').content.querySelector('.success');
+  var successElement = successTemplate.cloneNode(true);
 
   var updateRoomAvailability = function () {
     for (var i = 0; i < allRoomOptions.length; i++) {
@@ -77,4 +80,48 @@
   roomNumberElement.addEventListener('change', function () {
     updateRoomAvailability();
   });
+
+  var makeInactive = function () {
+    var popup = document.querySelector('.popup');
+    var allPins = document.querySelectorAll('.map__pin');
+
+    // окно успешного добавления
+    window.fragment.appendChild(successElement);
+    document.body.insertAdjacentElement('afterbegin', successElement);
+    // очистить форму
+    formElement.reset();
+    // удалить метки и карточку активного объявления
+    for (var i = 0; i < allPins.length; i++) {
+      if (allPins[i].dataset.id) {
+        allPins[i].remove();
+      }
+    }
+
+    if (popup) {
+      popup.remove();
+    }
+    // неактивное состояние
+    window.inactiveMap();
+    window.clickOnMainPin();
+
+  };
+
+  formElement.addEventListener('submit', function (evt) {
+    window.upload(new FormData(formElement), function () {
+      makeInactive();
+    }, window.errorHandler);
+    evt.preventDefault();
+
+    successElement.addEventListener('click', function () {
+      successElement.remove();
+    });
+
+    document.addEventListener('keydown', function (evtClick) {
+      if (window.isEscPressed(evtClick)) {
+        successElement.remove();
+      }
+    });
+  });
+
+
 })();
