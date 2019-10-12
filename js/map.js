@@ -15,11 +15,6 @@
   var mapPinMainStyleTop = window.mapPinMainElement.style.top;
 
 
-  var successHandler = function (offers) {
-    window.renderPins(offers);
-    window.dataArray = offers;
-  };
-
   window.errorHandler = function (errorMessage) {
     var errorElement = errorTemplate.cloneNode(true);
     window.fragment.appendChild(errorElement);
@@ -47,9 +42,7 @@
 
   window.startMap = function () {
     window.mapElement.classList.remove('map--faded');
-
-    window.load(successHandler, window.errorHandler);
-
+    window.renderPins(window.pins);
     adFormElement.classList.remove('ad-form--disabled');
     for (var i = 0; i < allAdFormElements.length; i++) {
       allAdFormElements[i].disabled = false;

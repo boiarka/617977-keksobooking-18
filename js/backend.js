@@ -9,7 +9,6 @@
 
   var createRequest = function (type, url, onSuccess, onError, data) {
     var xhr = new XMLHttpRequest();
-    var isType = type === 'POST';
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
@@ -29,7 +28,7 @@
     xhr.timeout = TIMEOUT;
     xhr.open(type, url);
 
-    if (isType) {
+    if (data) {
       xhr.send(data);
     } else {
       xhr.send();
