@@ -6,15 +6,12 @@
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPinsElement = document.querySelector('.map__pins');
   var selectHousingTypeElement = document.querySelector('#housing-type');
-  var allOptionsHousingType = selectHousingTypeElement.querySelectorAll('option');
 
   var deleteAllPins = function () {
     // удалить метки и карточку активного объявления
-    var allPins = document.querySelectorAll('.map__pin');
-    for (var z = 0; z < allPins.length; z++) {
-      if (allPins[z].dataset.id) {
-        allPins[z].remove();
-      }
+    var allPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < allPins.length; i++) {
+      allPins[i].remove();
     }
   };
 
@@ -57,44 +54,29 @@
       window.fragment.appendChild(pinElement);
     }
     mapFiltersContainer.before(window.fragment);
-    return window.renderedPins;
   };
 
-  var filterTypePins = function () {
-    var popup = document.querySelector('.popup');
-    if (popup) {
-      popup.remove();
-    }
-    for (var i = 0; i < allOptionsHousingType.length; i++) {
-      var selectedType = allOptionsHousingType[i].value;
-      if (allOptionsHousingType[i].selected === true && selectedType !== 'any') {
-        var filteredHousingPins = window.pins.filter(function (pin) {
-          return pin.offer.type === selectedType;
-        });
+  var getFilteredOffers = function (offers) {
+    var selectedType = selectHousingTypeElement.value;
+    var data = offers.filter(function (offerItem) {
+      return offerItem.offer.type === selectedType;
+    });
+    return data;
+  };
 
-        if (filteredHousingPins.length > 0) {
-          deleteAllPins();
-          window.renderPins(filteredHousingPins);
-        } else if (filteredHousingPins.length === 0) {
-          deleteAllPins();
-        }
-
-      } else if (selectedType === 'any') {
-        deleteAllPins();
-        window.renderPins(window.pins);
-      }
-    }
+  var filterTypeOffers = function () {
+    var selectedType = selectHousingTypeElement.value;
+    var filteredOffers = selectedType === 'any' ? window.offers : getFilteredOffers(window.offers);
+    deleteAllPins();
+    window.renderPins(filteredOffers);
   };
 
 
   selectHousingTypeElement.addEventListener('change', function () {
-    filterTypePins();
+    var popup = document.querySelector('.popup');
+    if (popup) {
+      popup.remove();
+    }
+    filterTypeOffers();
   });
-
-  var successHandler = function (offers) {
-    window.pins = offers;
-    return window.pins;
-  };
-
-  window.load(successHandler, window.errorHandler);
 })();

@@ -21,28 +21,14 @@
   });
 
   // Клики по главному пину, добавление и удаление обработчиков
-
   window.clickOnMainPin = function () {
-    window.mapPinMainElement.addEventListener('mousedown', window.startMap);
-    window.mapPinMainElement.addEventListener('mouseup', function () {
-      window.mapPinMainElement.removeEventListener('mousedown', window.startMap);
-      window.mapPinMainElement.removeEventListener('keydown', pinKeyDown);
-    });
-
     var pinKeyDown = function (evt) {
       if (window.isEnterPressed(evt)) {
         window.startMap();
       }
     };
-
+    window.mapPinMainElement.addEventListener('mousedown', window.startMap);
     window.mapPinMainElement.addEventListener('keydown', pinKeyDown);
-
-    window.mapPinMainElement.addEventListener('keyup', function (evt) {
-      if (window.isEnterPressed(evt)) {
-        window.mapPinMainElement.removeEventListener('keydown', pinKeyDown);
-        window.mapPinMainElement.removeEventListener('mousedown', window.startMap);
-      }
-    });
   };
 
   window.clickOnMainPin();
