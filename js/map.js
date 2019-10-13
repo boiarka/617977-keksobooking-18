@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var isPageActive = false;
   var adFormElement = document.querySelector('.ad-form');
   var allAdFormElements = document.querySelectorAll('.ad-form__element');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -14,11 +15,6 @@
   var mapPinMainStyleLeft = window.mapPinMainElement.style.left;
   var mapPinMainStyleTop = window.mapPinMainElement.style.top;
 
-
-  var successHandler = function (offers) {
-    window.renderPins(offers);
-    window.dataArray = offers;
-  };
 
   window.errorHandler = function (errorMessage) {
     var errorElement = errorTemplate.cloneNode(true);
@@ -45,19 +41,27 @@
 
   };
 
+  var successHandler = function (offers) {
+    window.offers = offers;
+    window.renderPins(window.offers);
+  };
+
+
   window.startMap = function () {
-    window.mapElement.classList.remove('map--faded');
-
-    window.load(successHandler, window.errorHandler);
-
-    adFormElement.classList.remove('ad-form--disabled');
-    for (var i = 0; i < allAdFormElements.length; i++) {
-      allAdFormElements[i].disabled = false;
+    if (!isPageActive) {
+      isPageActive = true;
+      window.mapElement.classList.remove('map--faded');
+      adFormElement.classList.remove('ad-form--disabled');
+      for (var i = 0; i < allAdFormElements.length; i++) {
+        allAdFormElements[i].disabled = false;
+      }
+      window.load(successHandler, window.errorHandler);
+      window.addressElement.value = mainPinOffsetLeft + ', ' + mainPinOffsetTop;
     }
-    window.addressElement.value = mainPinOffsetLeft + ', ' + mainPinOffsetTop;
   };
 
   window.inactiveMap = function () {
+    isPageActive = false;
     window.mapElement.classList.add('map--faded');
     adFormElement.classList.add('ad-form--disabled');
     for (var i = 0; i < allAdFormElements.length; i++) {
