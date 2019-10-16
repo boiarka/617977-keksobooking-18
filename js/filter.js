@@ -2,6 +2,7 @@
 
 (function () {
   var MAX_NUM_PINS = 5;
+
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPinsElement = document.querySelector('.map__pins');
@@ -133,10 +134,15 @@
     window.renderPins(filteredOffers);
   };
 
+  var lastTimeout;
   mapFiltersElement.addEventListener('change', function () {
-    deleteAllPins();
-    filterOffers();
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(function () {
+      deleteAllPins();
+      filterOffers();
+    }, 500);
   });
-
 
 })();
