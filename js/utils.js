@@ -56,7 +56,6 @@
     return evt.keyCode === ESC_KEYCODE;
   };
 
-
   // Проверка: содержит ли массив нужный элемент другого массива
   window.isArrayContain = function (filteredData, featuresData) {
     var filteredDataOk = false;

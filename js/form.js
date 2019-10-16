@@ -50,7 +50,6 @@
     }
   };
 
-
   var updateOfferType = function () {
     var typeOfferOptions = typeOfferElement.querySelectorAll('option');
     for (var i = 0; i < typeOfferOptions.length; i++) {
@@ -103,7 +102,6 @@
     // неактивное состояние
     window.inactiveMap();
     window.clickOnMainPin();
-
   };
 
   formElement.addEventListener('submit', function (evt) {
@@ -122,6 +120,5 @@
       }
     });
   });
-
 
 })();

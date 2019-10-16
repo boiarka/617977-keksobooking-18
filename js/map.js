@@ -1,20 +1,19 @@
 'use strict';
 
 (function () {
+  window.addressElement = document.querySelector('#address');
+  window.mapElement = document.querySelector('.map');
+  window.mapPinMainElement = document.querySelector('.map__pin--main');
+
   var isPageActive = false;
   var adFormElement = document.querySelector('.ad-form');
   var allAdFormElements = document.querySelectorAll('.ad-form__element');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
 
-  window.addressElement = document.querySelector('#address');
-  window.mapElement = document.querySelector('.map');
-  window.mapPinMainElement = document.querySelector('.map__pin--main');
-
   var mainPinOffsetLeft = window.mapPinMainElement.offsetLeft;
   var mainPinOffsetTop = window.mapPinMainElement.offsetTop;
   var mapPinMainStyleLeft = window.mapPinMainElement.style.left;
   var mapPinMainStyleTop = window.mapPinMainElement.style.top;
-
 
   window.errorHandler = function (errorMessage) {
     var errorElement = errorTemplate.cloneNode(true);
@@ -45,7 +44,6 @@
     window.offers = offers;
     window.renderPins(window.offers);
   };
-
 
   window.startMap = function () {
     if (!isPageActive) {
