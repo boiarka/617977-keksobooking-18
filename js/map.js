@@ -57,6 +57,7 @@
       }
       window.load(successHandler, window.errorHandler);
       window.addressElement.value = mainPinOffsetLeft + ', ' + mainPinOffsetTop;
+      window.activateFilter();
     }
   };
 

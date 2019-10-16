@@ -3,6 +3,7 @@
 (function () {
   window.MAX_PIN_Y = 630;
   window.MAX_PIN_X = 130;
+  window.Z_INDEX = 999;
 
   var ENTER_KEYCODE = 13;
   var ESC_KEYCODE = 27;
@@ -40,19 +41,7 @@
 
   window.fragment = document.createDocumentFragment();
 
-  window.getRandomInteger = function (min, max) {
-    var rand = min + Math.random() * (max + 1 - min);
-    return Math.floor(rand);
-  };
-
-  window.getRandomLengthArray = function (array, max) {
-    var newArray = [];
-    for (var i = 0; i < window.getRandomInteger(1, max); i++) {
-      newArray.push(array[i]);
-    }
-    return newArray;
-  };
-
+  // Синхронизация двух select
   window.syncSelectsValues = function (selectFrom, selectTo) {
     var selectedValue = selectFrom.value;
     if (selectedValue) {
@@ -65,6 +54,21 @@
   };
   window.isEscPressed = function (evt) {
     return evt.keyCode === ESC_KEYCODE;
+  };
+
+
+  // Проверка: содержит ли массив нужный элемент другого массива
+  window.isArrayContain = function (filteredData, featuresData) {
+    var filteredDataOk = false;
+    for (var i = 0; i < featuresData.length; i++) {
+      if (filteredData.offer.features.indexOf(featuresData[i]) !== -1) {
+        filteredDataOk = true;
+      } else {
+        filteredDataOk = false;
+        return filteredDataOk;
+      }
+    }
+    return filteredDataOk;
   };
 
 })();

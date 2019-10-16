@@ -84,7 +84,7 @@
   var makeInactive = function () {
     var popup = document.querySelector('.popup');
     var allPins = document.querySelectorAll('.map__pin');
-
+    window.resetFilter();
     // окно успешного добавления
     window.fragment.appendChild(successElement);
     document.body.insertAdjacentElement('afterbegin', successElement);
