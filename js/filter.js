@@ -6,12 +6,11 @@
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPinsElement = document.querySelector('.map__pins');
   var mapFiltersElement = document.querySelector('.map__filters');
-  var mapCheckboxElements = document.querySelectorAll('.map__checkbox');
 
   var selectHousingTypeElement = document.querySelector('#housing-type');
   var selectHousingPriceElement = document.querySelector('#housing-price');
   var selectHousingRoomsElement = document.querySelector('#housing-rooms');
-  var selectHousinggGuestsElement = document.querySelector('#housing-guests');
+  var selectHousingGuestsElement = document.querySelector('#housing-guests');
 
 
   var filterPriceValues = {
@@ -82,52 +81,7 @@
     mapFiltersContainer.before(window.fragment);
   };
 
-  // Тип
-  var getFilteredOffers = function (offers) {
-    var selected = selectHousingTypeElement.value;
-    var data = offers.filter(function (offerItem) {
-      return offerItem.offer.type === selected;
-    });
-    return data;
-  };
-
-
-  // Цена
-  var getFilteredPrice = function (offers) {
-    var selected = selectHousingPriceElement.value;
-
-    var data = offers.filter(function (offerItem) {
-      if (selected === 'low') {
-        return offerItem.offer.price <= filterPriceValues.low.max;
-      } else if (selected === 'middle') {
-        return (offerItem.offer.price >= filterPriceValues.middle.min && offerItem.offer.price <= filterPriceValues.middle.max);
-      } else if (selected === 'high') {
-        return (offerItem.offer.price >= filterPriceValues.high.min);
-      }
-      return false;
-    });
-    return data;
-  };
-
-  // Кол-во комнат
-  var getFilteredRooms = function (offers) {
-    var selected = +selectHousingRoomsElement.value;
-    var data = offers.filter(function (offerItem) {
-      return offerItem.offer.rooms === selected;
-    });
-    return data;
-  };
-
-  // Кол-во гостей
-  var getFilteredGuests = function (offers) {
-    var selected = +selectHousinggGuestsElement.value;
-    var data = offers.filter(function (offerItem) {
-      return offerItem.offer.guests === selected;
-    });
-    return data;
-  };
-
-  // есть ли в массиве нужный элемент
+  // Проверка содержит ли массив нужный элемент другого массива
   var getFilteredFeatures = function (filteredData, featuresData) {
     var filteredDataOk = false;
     for (var i = 0; i < featuresData.length; i++) {
@@ -141,44 +95,47 @@
     return filteredDataOk;
   };
 
-  var filterOffers = function () {
-    var selectedType = selectHousingTypeElement.value;
-    var filteredTypes = selectedType === 'any' ? window.offers : getFilteredOffers(window.offers);
-
-    var selectedPrice = selectHousingPriceElement.value;
-    var filteredPrice = selectedPrice === 'any' ? filteredTypes : getFilteredPrice(filteredTypes);
-
-    var selectedRoom = selectHousingRoomsElement.value;
-    var filteredRooms = selectedRoom === 'any' ? filteredPrice : getFilteredRooms(filteredPrice);
-
-    var selectedGuests = selectHousinggGuestsElement.value;
-    var filteredGuests = selectedGuests === 'any' ? filteredRooms : getFilteredGuests(filteredRooms);
-
-    var data = filteredGuests; // массив с отфильтрованными офферами
-    var dataCheckbox = []; // массив с выбранными чекбоксами
-    for (var i = 0; i < mapCheckboxElements.length; i++) {
-      if (mapCheckboxElements[i].checked) {
-        dataCheckbox.push(mapCheckboxElements[i].value);
-      }
+  var checkPrice = function (price, offerPrice) {
+    if (price === 'low') {
+      return offerPrice <= filterPriceValues.low.max;
+    } else if (price === 'middle') {
+      return (offerPrice >= filterPriceValues.middle.min && offerPrice <= filterPriceValues.middle.max);
+    } else if (price === 'high') {
+      return offerPrice >= filterPriceValues.high.min;
     }
-
-    if (dataCheckbox.length > 0) {
-      // проверяем совпадение массива оффера с выбранными удобствами (чекбоксами)
-      var newData = [];
-      for (var y = 0; y < data.length; y++) {
-        if (getFilteredFeatures(data[y], dataCheckbox) === true) {
-          newData.push(data[y]);
-        }
-      }
-      window.renderPins(newData);
-    } else {
-      window.renderPins(data);
-    }
+    return false;
   };
 
-  mapFiltersElement.addEventListener('change', function (evt) {
+  var filterOffers = function () {
+    var mapCheckboxElements = document.querySelectorAll('.map__checkbox:checked');
+    var selectedFeatures = Array.from(mapCheckboxElements).map(function (checkbox) {
+      return checkbox.value;
+    });
+
+    var filteredOffers = window.offers.filter(function (offerItem) {
+      var type = selectHousingTypeElement.value;
+      var price = selectHousingPriceElement.value;
+      var rooms = selectHousingRoomsElement.value;
+      var guests = selectHousingGuestsElement.value;
+
+      var isTypeMatched = type === 'any' ? true : offerItem.offer.type === type;
+      var isGuestsMatched = guests === 'any' ? true : offerItem.offer.guests === +guests;
+      var isRoomsMatched = rooms === 'any' ? true : offerItem.offer.rooms === +rooms;
+      var isPriceMatched = price === 'any' ? true : checkPrice(price, offerItem.offer.price);
+
+      if (selectedFeatures.length > 0) {
+        var isFeaturesMatched = getFilteredFeatures(offerItem, selectedFeatures);
+        return isTypeMatched && isGuestsMatched && isRoomsMatched && isPriceMatched && isFeaturesMatched;
+      }
+      return isTypeMatched && isGuestsMatched && isRoomsMatched && isPriceMatched;
+    });
+
+    window.renderPins(filteredOffers);
+  };
+
+  mapFiltersElement.addEventListener('change', function () {
     deleteAllPins();
-    filterOffers(evt.target.value);
+    filterOffers();
   });
 
 
