@@ -1,12 +1,17 @@
 'use strict';
 
 (function () {
-  window.MAX_PIN_Y = 630;
-  window.MAX_PIN_X = 130;
   window.Z_INDEX = 999;
 
   var ENTER_KEYCODE = 13;
   var ESC_KEYCODE = 27;
+
+  window.errorsMessage = {
+    ERROR: 'Произошла ошибка соединения',
+    STATUS: 'Cтатус ответа: ',
+    REQUEST_TIME: 'Запрос не успел выполниться за ',
+    MS: 'мс'
+  };
 
   window.typeOffer = {
     'flat': {

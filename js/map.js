@@ -5,7 +5,7 @@
   window.mapElement = document.querySelector('.map');
   window.mapPinMainElement = document.querySelector('.map__pin--main');
 
-  var isPageActive = false;
+  window.isPageActive = false;
   var adFormElement = document.querySelector('.ad-form');
   var allAdFormElements = document.querySelectorAll('.ad-form__element');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -43,11 +43,12 @@
   var successHandler = function (offers) {
     window.offers = offers;
     window.renderPins(window.offers);
+    window.activateFilter();
   };
-
+  window.resetFilter();
   window.startMap = function () {
-    if (!isPageActive) {
-      isPageActive = true;
+    if (!window.isPageActive) {
+      window.isPageActive = true;
       window.mapElement.classList.remove('map--faded');
       adFormElement.classList.remove('ad-form--disabled');
       for (var i = 0; i < allAdFormElements.length; i++) {
@@ -55,12 +56,11 @@
       }
       window.load(successHandler, window.errorHandler);
       window.addressElement.value = mainPinOffsetLeft + ', ' + mainPinOffsetTop;
-      window.activateFilter();
     }
   };
 
   window.inactiveMap = function () {
-    isPageActive = false;
+    window.isPageActive = false;
     window.mapElement.classList.add('map--faded');
     adFormElement.classList.add('ad-form--disabled');
     for (var i = 0; i < allAdFormElements.length; i++) {
