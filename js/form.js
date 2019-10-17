@@ -11,6 +11,7 @@
   var successTemplate = document.querySelector('#success').content.querySelector('.success');
   var successElement = successTemplate.cloneNode(true);
   var formResetElement = document.querySelector('.ad-form__reset');
+  var mainElement = document.querySelector('main');
 
   var updateCapacityGuests = function (roomNumber) {
     var capacityOptions = roomСapacityElement.querySelectorAll('option');
@@ -104,7 +105,7 @@
 
     window.upload(new FormData(formElement), function () {
       window.fragment.appendChild(successElement);
-      document.body.insertAdjacentElement('afterbegin', successElement);
+      mainElement.insertAdjacentElement('afterbegin', successElement);
       makeInactive();
     }, window.errorHandler);
 

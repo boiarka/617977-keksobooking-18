@@ -4,8 +4,8 @@
   var MAX_PIN_Y = 630;
   var MIN_PIN_Y = 130;
 
-  var pinWidth = window.mapPinMainElement.clientWidth;
-  var pinHeight = window.mapPinMainElement.clientHeight;
+  window.pinWidth = window.mapPinMainElement.clientWidth;
+  window.pinHeight = window.mapPinMainElement.clientHeight;
 
   window.clickOnMainPin = function () {
     var pinKeyDown = function (evt) {
@@ -22,8 +22,8 @@
   window.mapPinMainElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
-    var minX = Math.floor(0 - pinWidth / 2);
-    var maxX = Math.floor(window.mapElement.clientWidth - pinWidth / 2);
+    var minX = Math.floor(0 - window.pinWidth / 2);
+    var maxX = Math.floor(window.mapElement.clientWidth - window.pinWidth / 2);
 
     var startCoords = {
       x: evt.clientX,
@@ -46,12 +46,12 @@
       var pinCurrentY = window.mapPinMainElement.offsetTop - shift.y;
       var pinCurrentX = window.mapPinMainElement.offsetLeft - shift.x;
 
-      if (pinCurrentY < (MAX_PIN_Y - pinHeight) && pinCurrentY > (MIN_PIN_Y - pinWidth) && pinCurrentX > minX && pinCurrentX < maxX) {
+      if (pinCurrentY < (MAX_PIN_Y - window.pinHeight) && pinCurrentY > (MIN_PIN_Y - window.pinWidth) && pinCurrentX > minX && pinCurrentX < maxX) {
         window.mapPinMainElement.style.top = pinCurrentY + 'px';
         window.mapPinMainElement.style.left = pinCurrentX + 'px';
       }
 
-      window.addressElement.value = Math.ceil(pinCurrentX + pinWidth / 2) + ', ' + Math.ceil(pinCurrentY + pinHeight);
+      window.addressElement.value = Math.ceil(pinCurrentX + window.pinWidth / 2) + ', ' + Math.ceil(pinCurrentY + window.pinHeight);
     };
 
     var onMouseUp = function (upEvt) {

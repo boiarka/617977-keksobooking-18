@@ -75,7 +75,7 @@
         element.disabled = false;
       });
       window.load(successHandler, window.errorHandler);
-      window.addressElement.value = mainPinOffsetLeft + ', ' + mainPinOffsetTop;
+      window.addressElement.value = Math.floor(mainPinOffsetLeft + window.pinWidth / 2) + ', ' + Math.floor(mainPinOffsetTop + window.pinHeight / 2);
     }
   };
 
