@@ -1,7 +1,9 @@
 'use strict';
 
 (function () {
-  window.Z_INDEX = 999;
+  window.Z_INDEX = 998;
+  window.ERROR_Z_INDEX = 999;
+  window.fragment = document.createDocumentFragment();
 
   var ENTER_KEYCODE = 13;
   var ESC_KEYCODE = 27;
@@ -44,8 +46,6 @@
     }
   };
 
-  window.fragment = document.createDocumentFragment();
-
   // Синхронизация двух select
   window.syncSelectsValues = function (selectFrom, selectTo) {
     var selectedValue = selectFrom.value;
@@ -63,16 +63,16 @@
 
   // Проверка: содержит ли массив нужный элемент другого массива
   window.isArrayContain = function (filteredData, featuresData) {
-    var filteredDataOk = false;
+    var isContain = false;
     for (var i = 0; i < featuresData.length; i++) {
       if (filteredData.offer.features.indexOf(featuresData[i]) !== -1) {
-        filteredDataOk = true;
+        isContain = true;
       } else {
-        filteredDataOk = false;
-        return filteredDataOk;
+        isContain = false;
+        return isContain;
       }
     }
-    return filteredDataOk;
+    return isContain;
   };
 
 })();

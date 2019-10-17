@@ -74,7 +74,7 @@
   };
 
   var formChangeHandler = window.debounce(function () {
-    window.deleteAllPins();
+    window.deletePopapAndPins();
     filterOffers();
   });
   mapFiltersElement.addEventListener('change', formChangeHandler);

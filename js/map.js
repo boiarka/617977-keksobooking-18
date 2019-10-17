@@ -6,8 +6,9 @@
   window.mapPinMainElement = document.querySelector('.map__pin--main');
 
   window.isPageActive = false;
+
   var adFormElement = document.querySelector('.ad-form');
-  var allAdFormElements = document.querySelectorAll('.ad-form__element');
+  var adFormElements = document.querySelectorAll('.ad-form__element');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
 
   var mainPinOffsetLeft = window.mapPinMainElement.offsetLeft;
@@ -15,29 +16,47 @@
   var mapPinMainStyleLeft = window.mapPinMainElement.style.left;
   var mapPinMainStyleTop = window.mapPinMainElement.style.top;
 
+  window.inactiveMap = function () {
+    window.isPageActive = false;
+    window.mapElement.classList.add('map--faded');
+    adFormElement.classList.add('ad-form--disabled');
+    for (var i = 0; i < adFormElements.length; i++) {
+      adFormElements[i].disabled = true;
+    }
+
+    window.mapPinMainElement.style.left = mapPinMainStyleLeft;
+    window.mapPinMainElement.style.top = mapPinMainStyleTop;
+    window.addressElement.value = mainPinOffsetLeft + ', ' + mainPinOffsetTop;
+  };
+
   window.errorHandler = function (errorMessage) {
     var errorElement = errorTemplate.cloneNode(true);
+    errorElement.style.zIndex = window.ERROR_Z_INDEX;
+    var errorTextElement = errorElement.querySelector('.error__message');
+    var errorButtonElement = errorElement.querySelector('.error__button');
+
+    errorTextElement.textContent = errorMessage;
     window.fragment.appendChild(errorElement);
     document.body.insertAdjacentElement('afterbegin', errorElement);
-    var errorTextElement = document.querySelector('.error__message');
-    errorTextElement.innerHTML = errorMessage;
-    var errorButtonElement = document.querySelector('.error__button');
-    var errorDiv = document.querySelector('.error');
+
+    var errorBlock = document.querySelector('.error');
 
     errorButtonElement.addEventListener('click', function () {
-      errorDiv.remove();
+      errorBlock.remove();
     });
 
-    errorDiv.addEventListener('click', function () {
-      errorDiv.remove();
+    errorBlock.addEventListener('click', function () {
+      errorBlock.remove();
     });
 
     document.addEventListener('keydown', function (evtClick) {
       if (window.isEscPressed(evtClick)) {
-        errorDiv.remove();
+        errorBlock.remove();
       }
     });
 
+    window.inactiveMap();
+    window.clickOnMainPin();
   };
 
   var successHandler = function (offers) {
@@ -45,31 +64,19 @@
     window.renderPins(window.offers);
     window.activateFilter();
   };
+
   window.resetFilter();
   window.startMap = function () {
     if (!window.isPageActive) {
       window.isPageActive = true;
       window.mapElement.classList.remove('map--faded');
       adFormElement.classList.remove('ad-form--disabled');
-      for (var i = 0; i < allAdFormElements.length; i++) {
-        allAdFormElements[i].disabled = false;
-      }
+      adFormElements.forEach(function (element) {
+        element.disabled = false;
+      });
       window.load(successHandler, window.errorHandler);
       window.addressElement.value = mainPinOffsetLeft + ', ' + mainPinOffsetTop;
     }
-  };
-
-  window.inactiveMap = function () {
-    window.isPageActive = false;
-    window.mapElement.classList.add('map--faded');
-    adFormElement.classList.add('ad-form--disabled');
-    for (var i = 0; i < allAdFormElements.length; i++) {
-      allAdFormElements[i].disabled = true;
-    }
-
-    window.mapPinMainElement.style.left = mapPinMainStyleLeft;
-    window.mapPinMainElement.style.top = mapPinMainStyleTop;
-    window.addressElement.value = mainPinOffsetLeft + ', ' + mainPinOffsetTop;
   };
 
 })();

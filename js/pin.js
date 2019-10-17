@@ -7,17 +7,15 @@
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPinsElement = document.querySelector('.map__pins');
 
-  window.deleteAllPins = function () {
-    // удалить попап
+  window.deletePopapAndPins = function () {
     var popup = document.querySelector('.popup');
+    var allPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
     if (popup) {
       popup.remove();
     }
-    // удалить метки и карточку активного объявления
-    var allPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < allPins.length; i++) {
-      allPins[i].remove();
-    }
+    allPins.forEach(function (pin) {
+      pin.remove();
+    });
   };
 
 
