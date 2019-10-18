@@ -15,7 +15,6 @@
 
   var updateCapacityGuests = function (roomNumber) {
     var capacityOptions = roomСapacityElement.querySelectorAll('option');
-
     capacityOptions.forEach(function (option) {
       var currentCapacity = +option.value;
       if (roomNumber === 100) {
@@ -51,7 +50,7 @@
     });
 
     roomOptions.forEach(function (option) {
-      if (option.selected === true) {
+      if (option.selected) {
         pickedRoomNumber = +option.value;
       }
     });
@@ -61,9 +60,8 @@
 
   var updateOfferType = function () {
     var typeOfferOptions = typeOfferElement.querySelectorAll('option');
-
     typeOfferOptions.forEach(function (option) {
-      if (option.selected === true) {
+      if (option.selected) {
         var id = option.value;
         priceOfferElement.min = window.typeOffer[id].validation.min;
         priceOfferElement.placeholder = window.typeOffer[id].validation.placeholder;
@@ -72,54 +70,53 @@
   };
 
   var makeInactive = function () {
-    window.resetFilter();
+    window.filter.reset();
     formElement.reset();
-    window.deletePopapAndPins();
-    window.inactiveMap();
+    window.pin.delete();
+    window.map.inactive();
     window.clickOnMainPin();
     updateOfferType();
     updateRoomAvailability();
   };
 
-  updateOfferType();
   typeOfferElement.addEventListener('change', function () {
     updateOfferType();
   });
 
-  updateRoomAvailability();
   roomNumberElement.addEventListener('change', function () {
     updateRoomAvailability();
   });
 
   timeInElement.addEventListener('change', function () {
-    window.syncSelectsValues(timeInElement, timeOutElement);
+    window.utils.syncSelectsValues(timeInElement, timeOutElement);
   });
 
   timeOutElement.addEventListener('change', function () {
-    window.syncSelectsValues(timeOutElement, timeInElement);
+    window.utils.syncSelectsValues(timeOutElement, timeInElement);
   });
 
 
   formElement.addEventListener('submit', function (evt) {
     evt.preventDefault();
-
-    window.upload(new FormData(formElement), function () {
+    window.backend.upload(new FormData(formElement), function () {
       window.fragment.appendChild(successElement);
       mainElement.insertAdjacentElement('afterbegin', successElement);
       makeInactive();
-    }, window.errorHandler);
+    }, window.utils.error);
 
     successElement.addEventListener('click', function () {
       successElement.remove();
     });
 
     document.addEventListener('keydown', function (evtClick) {
-      if (window.isEscPressed(evtClick)) {
+      if (window.utils.isEscPressed(evtClick)) {
         successElement.remove();
       }
     });
   });
 
   formResetElement.addEventListener('click', makeInactive);
+  updateOfferType();
+  updateRoomAvailability();
 
 })();

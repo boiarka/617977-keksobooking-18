@@ -15,7 +15,6 @@
 
   var renderFeatures = function (features, element) {
     var featuresElement = element.querySelector('.popup__features');
-
     featuresElement.innerHTML = '';
     features.forEach(function (feature) {
       var item = liTemplate.cloneNode(true);

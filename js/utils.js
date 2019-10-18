@@ -1,18 +1,17 @@
 'use strict';
 
 (function () {
-  window.Z_INDEX = 998;
-  window.ERROR_Z_INDEX = 999;
-  window.fragment = document.createDocumentFragment();
-
+  var DEBOUNCE_INTERVAL = 500;
   var ENTER_KEYCODE = 13;
   var ESC_KEYCODE = 27;
 
+  window.fragment = document.createDocumentFragment();
   window.errorsMessage = {
     ERROR: 'Произошла ошибка соединения',
     STATUS: 'Cтатус ответа: ',
     REQUEST_TIME: 'Запрос не успел выполниться за ',
-    MS: 'мс'
+    MS: 'мс',
+    Z_INDEX: 999
   };
 
   window.typeOffer = {
@@ -46,33 +45,68 @@
     }
   };
 
-  // Синхронизация двух select
-  window.syncSelectsValues = function (selectFrom, selectTo) {
-    var selectedValue = selectFrom.value;
-    if (selectedValue) {
-      selectTo.value = selectedValue;
-    }
-  };
-
-  window.isEnterPressed = function (evt) {
-    return evt.keyCode === ENTER_KEYCODE;
-  };
-  window.isEscPressed = function (evt) {
-    return evt.keyCode === ESC_KEYCODE;
-  };
-
-  // Проверка: содержит ли массив нужный элемент другого массива
-  window.isArrayContain = function (filteredData, featuresData) {
-    var isContain = false;
-    for (var i = 0; i < featuresData.length; i++) {
-      if (filteredData.offer.features.indexOf(featuresData[i]) !== -1) {
-        isContain = true;
-      } else {
-        isContain = false;
-        return isContain;
+  window.utils = {
+    isEnterPressed: function (evt) {
+      return evt.keyCode === ENTER_KEYCODE;
+    },
+    isEscPressed: function (evt) {
+      return evt.keyCode === ESC_KEYCODE;
+    },
+    syncSelectsValues: function (selectFrom, selectTo) {
+      var selectedValue = selectFrom.value;
+      if (selectedValue) {
+        selectTo.value = selectedValue;
       }
+    },
+    isArrayContain: function (filteredData, featuresData) {
+      var isContain = true;
+      featuresData.forEach(function (item, i) {
+        if (filteredData.includes(featuresData[i]) === false) {
+          isContain = false;
+        }
+      });
+      return isContain;
+    },
+    debounce: function (cb) {
+      var lastTimeout = null;
+      return function () {
+        var parameters = arguments;
+        if (lastTimeout) {
+          window.clearTimeout(lastTimeout);
+        }
+        lastTimeout = window.setTimeout(function () {
+          cb.apply(null, parameters);
+        }, DEBOUNCE_INTERVAL);
+      };
+    },
+    error: function (errorMessage) {
+      var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+      var errorElement = errorTemplate.cloneNode(true);
+      var errorBlock = document.querySelector('.error');
+      var errorTextElement = errorElement.querySelector('.error__message');
+      var errorButtonElement = errorElement.querySelector('.error__button');
+      errorElement.style.zIndex = window.errorsMessage.Z_INDEX;
+      errorTextElement.textContent = errorMessage;
+      window.fragment.appendChild(errorElement);
+      document.body.insertAdjacentElement('afterbegin', errorElement);
+
+      errorButtonElement.addEventListener('click', function () {
+        errorBlock.remove();
+      });
+
+      errorBlock.addEventListener('click', function () {
+        errorBlock.remove();
+      });
+
+      document.addEventListener('keydown', function (evtClick) {
+        if (window.utils.isEscPressed(evtClick)) {
+          errorBlock.remove();
+        }
+      });
+
+      window.inactiveMap();
+      window.clickOnMainPin();
     }
-    return isContain;
   };
 
 })();

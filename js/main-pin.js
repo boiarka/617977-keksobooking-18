@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var PIN_Z_INDEX = 998;
   var MAX_PIN_Y = 630;
   var MIN_PIN_Y = 130;
 
@@ -9,15 +10,16 @@
 
   window.clickOnMainPin = function () {
     var pinKeyDown = function (evt) {
-      if (window.isEnterPressed(evt)) {
-        window.startMap();
+      if (window.utils.isEnterPressed(evt)) {
+        window.map.start();
       }
     };
-    window.mapPinMainElement.addEventListener('mousedown', window.startMap);
+    window.mapPinMainElement.addEventListener('mousedown', window.map.start);
     window.mapPinMainElement.addEventListener('keydown', pinKeyDown);
   };
 
   window.clickOnMainPin();
+  window.addressElement.value = Math.floor(window.mainPinOffsetLeft + window.pinWidth / 2) + ', ' + Math.floor(window.mainPinOffsetTop + window.pinHeight / 2);
 
   window.mapPinMainElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -32,7 +34,7 @@
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      window.mapPinMainElement.style.zIndex = window.Z_INDEX;
+      window.mapPinMainElement.style.zIndex = PIN_Z_INDEX;
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
@@ -64,5 +66,4 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-
 })();
