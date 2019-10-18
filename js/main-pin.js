@@ -1,12 +1,22 @@
 'use strict';
 
 (function () {
-  var PIN_Z_INDEX = 998;
-  var MAX_PIN_Y = 630;
-  var MIN_PIN_Y = 130;
+  var PIN = {
+    WIDTH: 65,
+    HEIGHT: 65,
+    FULL_HEIGHT: 81,
+    Z_INDEX: 998,
+    MAX_Y: 630,
+    MIN_Y: 130
+  };
 
-  window.pinWidth = window.mapPinMainElement.clientWidth;
-  window.pinHeight = window.mapPinMainElement.clientHeight;
+  var pinMain = document.querySelector('.map__pin--main');
+  var minX = 0 - Math.floor(PIN.WIDTH / 2);
+  var maxX = 1200 - Math.floor(PIN.WIDTH / 2);
+  var minY = PIN.MIN_Y - PIN.FULL_HEIGHT;
+  var maxY = PIN.MAX_Y - PIN.FULL_HEIGHT;
+
+  pinMain.style.zIndex = PIN.Z_INDEX;
 
   window.clickOnMainPin = function () {
     var pinKeyDown = function (evt) {
@@ -19,22 +29,19 @@
   };
 
   window.clickOnMainPin();
-  window.addressElement.value = Math.floor(window.mainPinOffsetLeft + window.pinWidth / 2) + ', ' + Math.floor(window.mainPinOffsetTop + window.pinHeight / 2);
+  window.addressElement.value = Math.floor(pinMain.offsetLeft + PIN.WIDTH / 2) + ', ' + Math.floor(pinMain.offsetTop + PIN.HEIGHT / 2);
 
-  window.mapPinMainElement.addEventListener('mousedown', function (evt) {
-    evt.preventDefault();
-
-    var minX = Math.floor(0 - window.pinWidth / 2);
-    var maxX = Math.floor(window.mapElement.clientWidth - window.pinWidth / 2);
+  window.mapPinMainElement.addEventListener('mousedown', function (dragEvt) {
+    dragEvt.preventDefault();
 
     var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
+      x: dragEvt.clientX,
+      y: dragEvt.clientY
     };
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      window.mapPinMainElement.style.zIndex = PIN_Z_INDEX;
+
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
@@ -45,15 +52,28 @@
         y: moveEvt.clientY
       };
 
-      var pinCurrentY = window.mapPinMainElement.offsetTop - shift.y;
-      var pinCurrentX = window.mapPinMainElement.offsetLeft - shift.x;
+      var pinCurrentTop = pinMain.offsetTop - shift.y;
+      var pinCurrentLeft = pinMain.offsetLeft - shift.x;
 
-      if (pinCurrentY < (MAX_PIN_Y - window.pinHeight) && pinCurrentY > (MIN_PIN_Y - window.pinWidth) && pinCurrentX > minX && pinCurrentX < maxX) {
-        window.mapPinMainElement.style.top = pinCurrentY + 'px';
-        window.mapPinMainElement.style.left = pinCurrentX + 'px';
+      if (pinCurrentLeft < minX) {
+        pinCurrentLeft = minX;
       }
 
-      window.addressElement.value = Math.ceil(pinCurrentX + window.pinWidth / 2) + ', ' + Math.ceil(pinCurrentY + window.pinHeight);
+      if (pinCurrentLeft > maxX) {
+        pinCurrentLeft = maxX;
+      }
+
+      if (pinCurrentTop < minY) {
+        pinCurrentTop = minY;
+      }
+
+      if (pinCurrentTop > maxY) {
+        pinCurrentTop = maxY;
+      }
+
+      pinMain.style.top = pinCurrentTop + 'px';
+      pinMain.style.left = pinCurrentLeft + 'px';
+      window.addressElement.value = Math.floor(pinCurrentLeft + (pinMain.clientWidth / 2)) + ', ' + Math.floor(pinCurrentTop + 81);
     };
 
     var onMouseUp = function (upEvt) {
