@@ -16,8 +16,6 @@
   var minY = PIN.MIN_Y - PIN.FULL_HEIGHT;
   var maxY = PIN.MAX_Y - PIN.FULL_HEIGHT;
 
-  pinMain.style.zIndex = PIN.Z_INDEX;
-
   window.clickOnMainPin = function () {
     var pinKeyDown = function (evt) {
       if (window.utils.isEnterPressed(evt)) {
@@ -29,6 +27,7 @@
   };
 
   window.clickOnMainPin();
+  pinMain.style.zIndex = PIN.Z_INDEX;
   window.addressElement.value = Math.floor(pinMain.offsetLeft + PIN.WIDTH / 2) + ', ' + Math.floor(pinMain.offsetTop + PIN.HEIGHT / 2);
 
   window.mapPinMainElement.addEventListener('mousedown', function (dragEvt) {
