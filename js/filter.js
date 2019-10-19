@@ -6,7 +6,7 @@
 
   var mapFiltersElement = document.querySelector('.map__filters');
   var allFilterSelects = mapFiltersElement.querySelectorAll('select');
-  var allFilterCheckboxs = mapFiltersElement.querySelectorAll('input[type=checkbox]');
+  var allFilterCheckboxes = mapFiltersElement.querySelectorAll('input[type=checkbox]');
 
   var selectHousingTypeElement = document.querySelector('#housing-type');
   var selectHousingPriceElement = document.querySelector('#housing-price');
@@ -19,7 +19,7 @@
         select.disabled = false;
       });
 
-      allFilterCheckboxs.forEach(function (checkbox) {
+      allFilterCheckboxes.forEach(function (checkbox) {
         checkbox.disabled = false;
       });
     },
@@ -29,7 +29,7 @@
         select.disabled = true;
       });
 
-      allFilterCheckboxs.forEach(function (checkbox) {
+      allFilterCheckboxes.forEach(function (checkbox) {
         checkbox.checked = false;
         checkbox.disabled = true;
       });
