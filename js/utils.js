@@ -1,11 +1,18 @@
 'use strict';
 
 (function () {
-  window.MAX_PIN_Y = 630;
-  window.MAX_PIN_X = 130;
-
+  var DEBOUNCE_INTERVAL = 500;
   var ENTER_KEYCODE = 13;
   var ESC_KEYCODE = 27;
+
+  window.fragment = document.createDocumentFragment();
+  window.errorsMessage = {
+    ERROR: 'Произошла ошибка соединения',
+    STATUS: 'Cтатус ответа: ',
+    REQUEST_TIME: 'Запрос не успел выполниться за ',
+    MS: 'мс',
+    Z_INDEX: 999
+  };
 
   window.typeOffer = {
     'flat': {
@@ -38,33 +45,68 @@
     }
   };
 
-  window.fragment = document.createDocumentFragment();
+  window.utils = {
+    isEnterPressed: function (evt) {
+      return evt.keyCode === ENTER_KEYCODE;
+    },
+    isEscPressed: function (evt) {
+      return evt.keyCode === ESC_KEYCODE;
+    },
+    syncSelectsValues: function (selectFrom, selectTo) {
+      var selectedValue = selectFrom.value;
+      if (selectedValue) {
+        selectTo.value = selectedValue;
+      }
+    },
+    isArrayContain: function (filteredData, featuresData) {
+      var isContain = true;
+      featuresData.forEach(function (item, i) {
+        if (filteredData.includes(featuresData[i]) === false) {
+          isContain = false;
+        }
+      });
+      return isContain;
+    },
+    debounce: function (cb) {
+      var lastTimeout = null;
+      return function () {
+        var parameters = arguments;
+        if (lastTimeout) {
+          window.clearTimeout(lastTimeout);
+        }
+        lastTimeout = window.setTimeout(function () {
+          cb.apply(null, parameters);
+        }, DEBOUNCE_INTERVAL);
+      };
+    },
+    error: function (errorMessage) {
+      var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+      var errorElement = errorTemplate.cloneNode(true);
+      var errorBlock = document.querySelector('.error');
+      var errorTextElement = errorElement.querySelector('.error__message');
+      var errorButtonElement = errorElement.querySelector('.error__button');
+      errorElement.style.zIndex = window.errorsMessage.Z_INDEX;
+      errorTextElement.textContent = errorMessage;
+      window.fragment.appendChild(errorElement);
+      document.body.insertAdjacentElement('afterbegin', errorElement);
 
-  window.getRandomInteger = function (min, max) {
-    var rand = min + Math.random() * (max + 1 - min);
-    return Math.floor(rand);
-  };
+      errorButtonElement.addEventListener('click', function () {
+        errorBlock.remove();
+      });
 
-  window.getRandomLengthArray = function (array, max) {
-    var newArray = [];
-    for (var i = 0; i < window.getRandomInteger(1, max); i++) {
-      newArray.push(array[i]);
+      errorBlock.addEventListener('click', function () {
+        errorBlock.remove();
+      });
+
+      document.addEventListener('keydown', function (evtClick) {
+        if (window.utils.isEscPressed(evtClick)) {
+          errorBlock.remove();
+        }
+      });
+
+      window.inactiveMap();
+      window.clickOnMainPin();
     }
-    return newArray;
-  };
-
-  window.syncSelectsValues = function (selectFrom, selectTo) {
-    var selectedValue = selectFrom.value;
-    if (selectedValue) {
-      selectTo.value = selectedValue;
-    }
-  };
-
-  window.isEnterPressed = function (evt) {
-    return evt.keyCode === ENTER_KEYCODE;
-  };
-  window.isEscPressed = function (evt) {
-    return evt.keyCode === ESC_KEYCODE;
   };
 
 })();
