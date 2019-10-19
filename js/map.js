@@ -12,11 +12,13 @@
   var mapPinMainStyleTop = window.mapPinMainElement.style.top;
   var avatarElement = document.querySelector('.ad-form-header__preview img');
   var previewOfferImageElement = document.querySelector('.ad-form__photo');
+  var isDataLoaded = false;
 
   var successHandler = function (offers) {
     window.offers = offers;
     window.pin.render(window.offers);
     window.filter.activate();
+    isDataLoaded = true;
   };
 
   window.filter.reset();
@@ -30,7 +32,12 @@
         adFormElements.forEach(function (element) {
           element.disabled = false;
         });
-        window.backend.load(successHandler, window.utils.error);
+        if (isDataLoaded) {
+          window.pin.render(window.offers);
+          window.filter.activate();
+        } else {
+          window.backend.load(successHandler, window.utils.error);
+        }
       }
     },
     inactive: function () {
